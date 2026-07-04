@@ -81,10 +81,20 @@ function seedTickets() {
   );
 }
 
+const LABEL_MAP = {
+  "alta|telefono": "intervento rapido",
+  "alta|chat":     "prioritario",
+  "alta|email":    "prioritario",
+  "normale|telefono": "da gestire",
+  "normale|chat":     "da gestire",
+  "normale|email":    "standard",
+  "bassa|telefono":   "monitorare",
+  "bassa|chat":       "monitorare",
+  "bassa|email":      "monitorare",
+};
+
 function computeUrgencyLabel(priority, sourceChannel) {
-  // TODO L12: implementare la formula priority + sourceChannel -> urgencyLabel.
-  // Non calcolare questo valore nel client.
-  return null;
+  return LABEL_MAP[`${priority}|${sourceChannel}`] ?? null;
 }
 
 function validateTicketInput(input) {
@@ -102,8 +112,9 @@ function validateTicketInput(input) {
     fieldErrors.priority = "Priorita' non valida.";
   }
 
-  // TODO L12: validare sourceChannel usando validSourceChannels.
-  // Il valore whatsapp deve produrre fieldErrors.sourceChannel.
+  if (!validSourceChannels.includes(input.sourceChannel)) {
+    fieldErrors.sourceChannel = "Canale non valido.";
+  }
 
   return fieldErrors;
 }
